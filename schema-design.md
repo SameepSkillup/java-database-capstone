@@ -84,3 +84,104 @@ This document outlines the hybrid data storage approach for the Smart Clinic Sys
   ],
   "notes": "Take Amoxicillin after meals. Avoid alcohol during treatment."
 }
+# Smart Clinic Management System – Schema Design
+
+## MySQL Database Design
+
+Structured, validated, and interrelated data works well in MySQL. Below are the core tables.
+
+---
+
+### Table: patients
+- **id**: INT, Primary Key, AUTO_INCREMENT  
+- **first_name**: VARCHAR(50), NOT NULL  
+- **last_name**: VARCHAR(50), NOT NULL  
+- **dob**: DATE, NOT NULL  
+- **email**: VARCHAR(100), UNIQUE, NOT NULL  
+- **phone**: VARCHAR(15), UNIQUE, NOT NULL  
+- **created_at**: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+---
+
+### Table: doctors
+- **id**: INT, Primary Key, AUTO_INCREMENT  
+- **first_name**: VARCHAR(50), NOT NULL  
+- **last_name**: VARCHAR(50), NOT NULL  
+- **specialization**: VARCHAR(100), NOT NULL  
+- **email**: VARCHAR(100), UNIQUE, NOT NULL  
+- **phone**: VARCHAR(15), UNIQUE, NOT NULL  
+- **availability_status**: BOOLEAN DEFAULT TRUE  
+- **created_at**: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+---
+
+### Table: appointments
+- **id**: INT, Primary Key, AUTO_INCREMENT  
+- **doctor_id**: INT, Foreign Key → doctors(id)  
+- **patient_id**: INT, Foreign Key → patients(id)  
+- **appointment_time**: DATETIME, NOT NULL  
+- **status**: ENUM('Scheduled','Completed','Cancelled') DEFAULT 'Scheduled'  
+- **notes**: TEXT NULL  
+- **created_at**: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+---
+
+### Table: admin
+- **id**: INT, Primary Key, AUTO_INCREMENT  
+- **username**: VARCHAR(50), UNIQUE, NOT NULL  
+- **password_hash**: VARCHAR(255), NOT NULL  
+- **role**: ENUM('SuperAdmin','Staff') DEFAULT 'Staff'  
+- **created_at**: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+---
+
+**Design Notes:**
+- Email and phone fields are marked `UNIQUE` to avoid duplicates.  
+- `appointments` table uses ENUM for status for data consistency.  
+- `doctor_id` and `patient_id` enforce relational integrity via foreign keys.  
+- Passwords in `admin` table should always be stored hashed, never plain text.  
+- Historical appointment records are retained for analytics.
+
+---
+
+## MongoDB Collection Design
+
+Some data doesn’t fit well in rigid tables, like free-form notes, prescription details, or feedback. For this design, we’ll store **prescriptions** in MongoDB.
+
+---
+
+### Collection: prescriptions
+```json
+{
+  "_id": { "$oid": "64abc123456789abcdef012" },
+  "appointmentId": 51,
+  "patient": {
+    "id": 12,
+    "name": "John Smith"
+  },
+  "doctor": {
+    "id": 3,
+    "name": "Dr. Emily Carter",
+    "specialization": "Cardiology"
+  },
+  "medications": [
+    {
+      "name": "Paracetamol",
+      "dosage": "500mg",
+      "instructions": "Take 1 tablet every 6 hours",
+      "duration_days": 5
+    },
+    {
+      "name": "Aspirin",
+      "dosage": "75mg",
+      "instructions": "Take once daily",
+      "duration_days": 30
+    }
+  ],
+  "pharmacy": {
+    "name": "Walgreens SF",
+    "location": "Market Street, San Francisco"
+  },
+  "created_at": { "$date": "2025-08-10T09:00:00Z" },
+  "tags": ["urgent", "follow-up"]
+}
