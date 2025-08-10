@@ -1,6 +1,46 @@
 package com.project.back_end.models;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "prescriptions")
 public class Prescription {
+
+    @Id
+    private String id;
+
+    private String patientName;
+    private Long appointmentId;
+    private String medication;
+    private String dosage;
+    private String doctorNotes;
+    private int refillCount;
+
+    // Getters & Setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
+    public String getPatientName() { return patientName; }
+    public void setPatientName(String patientName) { this.patientName = patientName; }
+
+    public Long getAppointmentId() { return appointmentId; }
+    public void setAppointmentId(Long appointmentId) { this.appointmentId = appointmentId; }
+
+    public String getMedication() { return medication; }
+    public void setMedication(String medication) { this.medication = medication; }
+
+    public String getDosage() { return dosage; }
+    public void setDosage(String dosage) { this.dosage = dosage; }
+
+    public String getDoctorNotes() { return doctorNotes; }
+    public void setDoctorNotes(String doctorNotes) { this.doctorNotes = doctorNotes; }
+
+    public int getRefillCount() { return refillCount; }
+    public void setRefillCount(int refillCount) { this.refillCount = refillCount; }
+}
+
+
+//public class Prescription {
 
   // @Document annotation:
 //    - Marks the class as a MongoDB document (a collection in MongoDB).
@@ -53,4 +93,4 @@ public class Prescription {
 //    - These methods allow access and modification of the fields of the Prescription class.
 
 
-}
+//}
