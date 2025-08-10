@@ -1,13 +1,14 @@
-# User Stories - Patient Appointment Portal
+# User Story Template
 
-## Admin User Stories
-- As an Admin, I want to add and remove Doctors, so that I can manage staff.
-- As an Admin, I want to view and update system settings, so that I can ensure proper functionality.
+**Title:**
+_As a [user role], I want [feature/goal], so that [reason]._
 
-## Patient User Stories
-- As a Patient, I want to register and log in, so that I can book appointments.
-- As a Patient, I want to view my upcoming appointments, so that I can stay informed.
+**Acceptance Criteria:**
+1. [Criteria 1]
+2. [Criteria 2]
+3. [Criteria 3]
 
-## Doctor User Stories
-- As a Doctor, I want to update my availability, so that patients can book appointments accordingly.
-- As a Doctor, I want to view my appointment schedule, so that I can manage my day efficiently.
+**Priority:** [High/Medium/Low]
+**Story Points:** [Estimated Effort in Points]
+**Notes:**
+- [Additional information or edge cases]
