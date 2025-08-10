@@ -1,6 +1,41 @@
 package com.project.back_end.models;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+
+@Entity
 public class Patient {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull
+    private String name;
+
+    @Email
+    @NotNull
+    @Column(unique = true)
+    private String email;
+
+    private String address;
+
+    // Getters & Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+}
+
+//public class Patient {
 // @Entity annotation:
 //    - Marks the class as a JPA entity, meaning it represents a table in the database.
 //    - Required for persistence frameworks (e.g., Hibernate) to map the class to a database table.
@@ -56,4 +91,4 @@ public class Patient {
 
   
 
-}
+//}
