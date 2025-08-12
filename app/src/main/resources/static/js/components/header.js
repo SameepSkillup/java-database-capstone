@@ -123,3 +123,96 @@
   16. **Render the Header**: Finally, the `renderHeader()` function is called to initialize the header rendering process when the page loads.
 */
    
+// header.js
+function renderHeader() {
+  const headerDiv = document.getElementById("header");
+  if (!headerDiv) return;
+
+  // 1️⃣ Skip showing role-based header on homepage
+  if (window.location.pathname.endsWith("/")) {
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("token");
+    return;
+  }
+
+  // 2️⃣ Get role & token from localStorage
+  const role = localStorage.getItem("userRole");
+  const token = localStorage.getItem("token");
+
+  // 3️⃣ Check for expired/invalid sessions
+  if ((role === "loggedPatient" || role === "admin" || role === "doctor") && !token) {
+    localStorage.removeItem("userRole");
+    alert("Session expired or invalid login. Please log in again.");
+    window.location.href = "/";
+    return;
+  }
+
+  // 4️⃣ Build role-based header
+  let headerContent = "";
+
+  if (role === "admin") {
+    headerContent += `
+      <button id="addDocBtn" class="adminBtn">Add Doctor</button>
+      <a href="#" id="logoutBtn">Logout</a>
+    `;
+  } else if (role === "doctor") {
+    headerContent += `
+      <a href="/pages/doctorDashboard.html">Home</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    `;
+  } else if (role === "patient") {
+    headerContent += `
+      <a href="/pages/login.html">Login</a>
+      <a href="/pages/signup.html">Sign Up</a>
+    `;
+  } else if (role === "loggedPatient") {
+    headerContent += `
+      <a href="/pages/patientDashboard.html">Home</a>
+      <a href="/pages/appointments.html">Appointments</a>
+      <a href="#" id="logoutPatientBtn">Logout</a>
+    `;
+  }
+
+  // 5️⃣ Inject into DOM
+  headerDiv.innerHTML = headerContent;
+
+  // 6️⃣ Attach event listeners
+  attachHeaderButtonListeners();
+}
+
+function attachHeaderButtonListeners() {
+  // Admin: Add Doctor
+  const addDocBtn = document.getElementById("addDocBtn");
+  if (addDocBtn) {
+    addDocBtn.addEventListener("click", () => openModal("addDoctor"));
+  }
+
+  // General logout
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+  }
+
+  // Logged patient logout
+  const logoutPatientBtn = document.getElementById("logoutPatientBtn");
+  if (logoutPatientBtn) {
+    logoutPatientBtn.addEventListener("click", logoutPatient);
+  }
+}
+
+// 🔹 Logout for admin/doctor
+function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("userRole");
+  window.location.href = "/";
+}
+
+// 🔹 Logout for patient (retains 'patient' role)
+function logoutPatient() {
+  localStorage.removeItem("token");
+  localStorage.setItem("userRole", "patient");
+  window.location.href = "/pages/patientDashboard.html";
+}
+
+// Auto-run when page loads
+document.addEventListener("DOMContentLoaded", renderHeader);

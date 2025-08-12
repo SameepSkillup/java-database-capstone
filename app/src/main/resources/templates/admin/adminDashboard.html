@@ -107,3 +107,73 @@ with search, filter, and modal functionality.
 
  -->
 
+<!-- File: app/src/main/resources/templates/admin/adminDashboard.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+
+    <!-- Page-specific and global styles -->
+    <link rel="stylesheet" th:href="@{/assets/css/adminDashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+
+    <!-- Utility and rendering logic -->
+    <script th:src="@{/js/render.js}" defer></script>
+    <script th:src="@{/js/util.js}" defer></script>
+
+    <!-- Layout components -->
+    <script th:src="@{/js/components/header.js}" defer></script>
+    <script th:src="@{/js/components/footer.js}" defer></script>
+</head>
+<body>
+<div class="container">
+    <div class="wrapper">
+
+        <!-- Dynamic Header -->
+        <div id="header"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Bar -->
+            <input type="text" id="searchBar" placeholder="Search by doctor name" />
+
+            <!-- Filter Section -->
+            <div class="filters">
+                <select id="filterTime">
+                    <option value="">Sort by Time</option>
+                    <option value="morning">Morning</option>
+                    <option value="afternoon">Afternoon</option>
+                    <option value="evening">Evening</option>
+                </select>
+
+                <select id="filterSpecialty">
+                    <option value="">Filter by Specialty</option>
+                    <option value="cardiology">Cardiology</option>
+                    <option value="neurology">Neurology</option>
+                    <option value="pediatrics">Pediatrics</option>
+                    <!-- More options can be loaded dynamically -->
+                </select>
+            </div>
+
+            <!-- Dynamic Content Area -->
+            <div id="content"></div>
+        </main>
+
+        <!-- Dynamic Footer -->
+        <div id="footer"></div>
+    </div>
+</div>
+
+<!-- Add Doctor Modal -->
+<div id="modal" class="modal">
+    <span id="closeModal" class="close">&times;</span>
+    <div id="modal-body"></div>
+</div>
+
+<!-- Page-specific scripts -->
+<script type="module" th:src="@{/js/services/adminDashboard.js}" defer></script>
+<script type="module" th:src="@{/js/components/doctorCard.js}" defer></script>
+
+</body>
+</html>

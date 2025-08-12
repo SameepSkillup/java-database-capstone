@@ -102,3 +102,62 @@
   Call the renderFooter function to populate the footer in the page
 
 */
+/*
+  Function to render the footer content into the page
+  Dynamically generates the footer content for consistent branding across all pages.
+*/
+
+function renderFooter() {
+  // 1. Select the footer element from the DOM
+  const footer = document.getElementById("footer");
+  if (!footer) return; // Exit if footer container is not found
+
+  // 2. Inject HTML Content
+  footer.innerHTML = `
+    <!-- Footer Wrapper -->
+    <footer class="footer">
+      <!-- Footer Container -->
+      <div class="footer-container">
+        
+        <!-- Footer Logo & Copyright -->
+        <div class="footer-logo">
+          <img src="../assets/images/logo/logo.png" alt="Hospital CMS Logo">
+          <p>© Copyright ${new Date().getFullYear()}. All Rights Reserved by Hospital CMS.</p>
+        </div>
+
+        <!-- Footer Links -->
+        <div class="footer-links">
+          
+          <!-- Company Column -->
+          <div class="footer-column">
+            <h4>Company</h4>
+            <a href="#">About</a>
+            <a href="#">Careers</a>
+            <a href="#">Press</a>
+          </div>
+
+          <!-- Support Column -->
+          <div class="footer-column">
+            <h4>Support</h4>
+            <a href="#">Account</a>
+            <a href="#">Help Center</a>
+            <a href="#">Contact Us</a>
+          </div>
+
+          <!-- Legals Column -->
+          <div class="footer-column">
+            <h4>Legals</h4>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Licensing</a>
+          </div>
+
+        </div> <!-- End of footer-links -->
+
+      </div> <!-- End of footer-container -->
+    </footer>
+  `;
+}
+
+// 3. Call the function so it runs when the file is loaded
+renderFooter();
