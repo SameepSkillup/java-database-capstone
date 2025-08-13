@@ -11,4 +11,14 @@
  *   fetch(`${API_BASE_URL}/api/appointments`)
  */
 
+// export const API_BASE_URL = "http://localhost:8080";
+
+// app/src/main/resources/static/js/config.js
+
+// Change this URL to match your backend API base
 export const API_BASE_URL = "http://localhost:8080";
+
+// Helper function to easily build full API endpoints
+export function apiEndpoint(path) {
+  return `${API_BASE_URL}${path}`;
+}
