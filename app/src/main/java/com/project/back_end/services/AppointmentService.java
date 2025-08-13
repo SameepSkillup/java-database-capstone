@@ -1,6 +1,6 @@
-package com.project.back_end.services;
+//package com.project.back_end.services;
 
-public class AppointmentService {
+//public class AppointmentService {
 // 1. **Add @Service Annotation**:
 //    - To indicate that this class is a service layer class for handling business logic.
 //    - The `@Service` annotation should be added before the class declaration to mark it as a Spring service component.
@@ -42,4 +42,116 @@ public class AppointmentService {
 //    - Instruction: Add `@Transactional` before this method to ensure atomicity when updating appointment status.
 
 
+//}
+package com.project.back_end.services;
+
+import com.project.back_end.model.Appointment;
+import com.project.back_end.repo.AppointmentRepository;
+import com.project.back_end.repo.PatientRepository;
+import com.project.back_end.repo.DoctorRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+
+@Service
+public class AppointmentService {
+
+    private final AppointmentRepository appointmentRepository;
+    private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
+    private final TokenService tokenService;
+
+    public AppointmentService(AppointmentRepository appointmentRepository,
+                               PatientRepository patientRepository,
+                               DoctorRepository doctorRepository,
+                               TokenService tokenService) {
+        this.appointmentRepository = appointmentRepository;
+        this.patientRepository = patientRepository;
+        this.doctorRepository = doctorRepository;
+        this.tokenService = tokenService;
+    }
+
+    @Transactional
+    public int bookAppointment(Appointment appointment) {
+        try {
+            appointmentRepository.save(appointment);
+            return 1;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<Map<String, String>> updateAppointment(Appointment appointment) {
+        Map<String, String> response = new HashMap<>();
+        Optional<Appointment> existingAppointment = appointmentRepository.findById(appointment.getId());
+
+        if (existingAppointment.isEmpty()) {
+            response.put("message", "Appointment not found");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // Add validation logic here (doctor availability, conflicts, etc.)
+        appointmentRepository.save(appointment);
+        response.put("message", "Appointment updated successfully");
+        return ResponseEntity.ok(response);
+    }
+
+    @Transactional
+    public ResponseEntity<Map<String, String>> cancelAppointment(long id, String token) {
+        Map<String, String> response = new HashMap<>();
+        Optional<Appointment> existingAppointment = appointmentRepository.findById(id);
+
+        if (existingAppointment.isEmpty()) {
+            response.put("message", "Appointment not found");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // Optional: validate that the patient is the one canceling
+        appointmentRepository.delete(existingAppointment.get());
+        response.put("message", "Appointment canceled successfully");
+        return ResponseEntity.ok(response);
+    }
+
+    public Map<String, Object> getAppointment(String pname, LocalDate date, String token) {
+        Map<String, Object> result = new HashMap<>();
+        Long doctorId = tokenService.extractDoctorIdFromToken(token);
+
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+        List<Appointment> appointments =
+                appointmentRepository.findByDoctorIdAndAppointmentTimeBetween(
+                        doctorId, startOfDay, endOfDay
+                );
+
+        if (pname != null && !pname.isBlank()) {
+            appointments.removeIf(a -> !a.getPatient().getName().toLowerCase().contains(pname.toLowerCase()));
+        }
+
+        result.put("appointments", appointments);
+        return result;
+    }
+
+    @Transactional
+    public ResponseEntity<Map<String, String>> changeStatus(long id, String status) {
+        Map<String, String> response = new HashMap<>();
+        Optional<Appointment> existingAppointment = appointmentRepository.findById(id);
+
+        if (existingAppointment.isEmpty()) {
+            response.put("message", "Appointment not found");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        Appointment appointment = existingAppointment.get();
+        appointment.setStatus(status);
+        appointmentRepository.save(appointment);
+
+        response.put("message", "Status updated successfully");
+        return ResponseEntity.ok(response);
+    }
 }
