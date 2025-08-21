@@ -1,40 +1,44 @@
 package com.project.back_end.mvc;
 
-import com.project.back_end.services.Service;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.Map;
+import com.project.back_end.services.Service;
 
 @Controller
 public class DashboardController {
 
-    @Autowired
-    private Service service;
 
-    // Admin Dashboard
+    @Autowired
+    Service service;
+
     @GetMapping("/adminDashboard/{token}")
-    public String adminDashboard(@PathVariable String token) {
-        Map<String, Object> validationResult = service.validateToken(token, "admin");
-        if (validationResult.isEmpty()) {
-            // Token is valid → load admin dashboard
+    public String adminDashboard(@PathVariable String token)
+    {
+        Map<String, String> map=service.validateToken(token,"admin").getBody();
+        System.out.println("map"+map);
+        if(map.isEmpty())
+        {
             return "admin/adminDashboard";
         }
-        // Token invalid → redirect to login page
-        return "redirect:/";
+        return "redirect:http://localhost:8080"; 
+        
     }
 
-    // Doctor Dashboard
     @GetMapping("/doctorDashboard/{token}")
-    public String doctorDashboard(@PathVariable String token) {
-        Map<String, Object> validationResult = service.validateToken(token, "doctor");
-        if (validationResult.isEmpty()) {
-            // Token is valid → load doctor dashboard
+    public String doctorDashboard(@PathVariable String token)
+    {
+        Map<String, String> map=service.validateToken(token,"doctor").getBody();
+        System.out.println("map"+map);
+        if(map.isEmpty())
+        {
             return "doctor/doctorDashboard";
         }
-        // Token invalid → redirect to login page
-        return "redirect:/";
+        
+        return "redirect:http://localhost:8080"; 
+        
     }
 }

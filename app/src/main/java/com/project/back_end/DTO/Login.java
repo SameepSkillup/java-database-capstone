@@ -30,31 +30,23 @@
 //}
 package com.project.back_end.DTO;
 
-public class Login {
 
-    private String identifier; // Email for Doctor/Patient, username for Admin
+public class Login {
+    
+    private String email;
     private String password;
 
-    // Default constructor (needed for JSON deserialization)
-    public Login() {
+    //getters and setters
+
+    public String getEmail() {
+        return email;
     }
 
-    // Parameterized constructor
-    public Login(String identifier, String password) {
-        this.identifier = identifier;
-        this.password = password;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    // Getter and Setter for identifier
-    public String getIdentifier() {
-        return identifier;
-    }
 
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
-    }
-
-    // Getter and Setter for password
     public String getPassword() {
         return password;
     }
@@ -62,4 +54,5 @@ public class Login {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }
